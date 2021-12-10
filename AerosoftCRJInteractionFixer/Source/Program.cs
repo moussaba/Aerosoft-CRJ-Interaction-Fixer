@@ -14,8 +14,8 @@ namespace AerosoftCRJInteractionFixer
 		static string OriginalPackageName = "aerosoft-crj";
 		static string PatchPackageName = "aerosoft-crj-interaction-fix";
 
-		static string OriginalPackageVersionRequirement_Community = "1.0.6";
-		static string OriginalPackageVersionRequirement_Marketplace = "1.0.9";
+		static string OriginalPackageVersionRequirement_Community = "1.0.15";
+		static string OriginalPackageVersionRequirement_Marketplace = "1.0.15";
 		static string PatchPackageVersion = "1.0.0";
 
 		static JsonSerializerOptions SerializerOptions = new JsonSerializerOptions
@@ -126,12 +126,36 @@ namespace AerosoftCRJInteractionFixer
 				return;
 			}
 
+			Log("Processing 'CRJ900_Interior.xml' files");
+			if (!ProcessModelBehaviors(OriginalPackagePath, PatchPackagePath, "Aerosoft_CRJ_900", "CRJ900_Interior.xml"))
+			{
+				DeleteDirectory(PatchPackagePath);
+
+				WriteFailureMessage();
+				WaitForExit();
+
+				return;
+			}
+
+			Log("Processing 'CRJ1000_Interior.xml' files");
+			if (!ProcessModelBehaviors(OriginalPackagePath, PatchPackagePath, "Aerosoft_CRJ_1000", "CRJ1000_Interior.xml"))
+			{
+				DeleteDirectory(PatchPackagePath);
+
+				WriteFailureMessage();
+				WaitForExit();
+
+				return;
+			}
+
 			GenerateLayout( PatchPackagePath );
 			GenerateManifest( PatchPackagePath, OriginalPackageManifest, OriginalPackageVersionRequirement );
 
 			WriteSuccessMessage();
 			WaitForExit();
 		}
+
+
 
 		static bool ProcessModelBehaviorDefs( string OriginalPackagePath, string PatchPackagePath )
 		{
